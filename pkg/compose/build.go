@@ -22,6 +22,7 @@ import (
 	"path/filepath"
 
 	"github.com/compose-spec/compose-go/types"
+	specutils "github.com/compose-spec/compose-go/utils"
 	"github.com/containerd/containerd/platforms"
 	"github.com/docker/buildx/build"
 	_ "github.com/docker/buildx/driver/docker" // required to get default driver registered
@@ -50,7 +51,7 @@ func (s *composeService) build(ctx context.Context, project *types.Project, opti
 	opts := map[string]build.Options{}
 	imagesToBuild := []string{}
 
-	args := flatten(options.Args.Resolve(envResolver(project.Environment)))
+	args := flatten(options.Args.Resolve(specutils.EnvResolver(project.Environment)))
 
 	services, err := project.GetServices(options.Services...)
 	if err != nil {
@@ -211,7 +212,7 @@ func (s *composeService) toBuildOptions(project *types.Project, service types.Se
 	var tags []string
 	tags = append(tags, imageTag)
 
-	buildArgs := flatten(service.Build.Args.Resolve(envResolver(project.Environment)))
+	buildArgs := flatten(service.Build.Args.Resolve(specutils.EnvResolver(project.Environment)))
 
 	var plats []specs.Platform
 	if platform, ok := project.Environment["DOCKER_DEFAULT_PLATFORM"]; ok {

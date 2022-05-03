@@ -21,6 +21,7 @@ import (
 	"fmt"
 
 	"github.com/compose-spec/compose-go/types"
+	specutils "github.com/compose-spec/compose-go/utils"
 	"github.com/docker/cli/cli"
 	cmd "github.com/docker/cli/cli/command/container"
 	"github.com/docker/compose/v2/pkg/api"
@@ -115,7 +116,7 @@ func applyRunOptions(project *types.Project, service *types.ServiceConfig, opts 
 	}
 	if len(opts.Environment) > 0 {
 		env := types.NewMappingWithEquals(opts.Environment)
-		projectEnv := env.Resolve(envResolver(project.Environment)).RemoveEmpty()
+		projectEnv := env.Resolve(specutils.EnvResolver(project.Environment)).RemoveEmpty()
 		service.Environment.OverrideBy(projectEnv)
 	}
 	for k, v := range opts.Labels {
