@@ -264,6 +264,8 @@ func (s *composeService) getCreateOptions(ctx context.Context, p *types.Project,
 	if err != nil {
 		return nil, nil, nil, err
 	}
+	s.configFile().ApplyBindMap(s.apiClient().DaemonHost(), binds)
+	s.configFile().ApplyBindMapToMounts(s.apiClient().DaemonHost(), mounts)
 
 	proxyConfig := types.MappingWithEquals(s.configFile().ParseProxyConfig(s.apiClient().DaemonHost(), nil))
 	env := proxyConfig.OverrideBy(service.Environment)
